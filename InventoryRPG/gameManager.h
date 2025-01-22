@@ -12,8 +12,15 @@ public :
 	void Draw();
 	void Unload();
 
+	float MapColorToValue(Color color);
+
 private:
-	Texture2D map;
+	std::vector<std::vector<float>> grid;
+
+	Image mapImage;
+	Texture2D mapTexture;
+	Color* colors;
 	float mapSize = 1;
+	float value = -1;
 };
 
