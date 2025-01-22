@@ -28,7 +28,7 @@ int main()
 
 void Load()
 {
-	InitWindow(1080, 720, "PathFinding");
+	InitWindow(800, 800, "PathFinding");
 	SetTargetFPS(60);
 
 	gameManager.Init();
