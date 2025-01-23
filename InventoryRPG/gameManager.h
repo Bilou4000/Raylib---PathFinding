@@ -17,11 +17,9 @@ public :
 	float MapColorToValue(Color color);
 	Vec2 GetGridPositionFromMouse(int mouseX, int mouseY);
 
-	void Cleanup();
-
 private:
 	std::vector<std::vector<float>> grid;
-	std::vector<Node*> path;
+	std::vector<Node> path;
 	std::vector<Node*> searched;
 
 	AStar astar;

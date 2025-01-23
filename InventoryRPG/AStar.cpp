@@ -4,7 +4,7 @@
 
 #include <vector>
 
-std::vector<Node*> AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, Vec2 goal)
+std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, Vec2 goal)
 {
 	printf("Pathfinding Start !!");
 
@@ -39,10 +39,10 @@ std::vector<Node*> AStar::Algorithm(const std::vector<std::vector<float>>& grid,
 		// Check if we reached the goal
 		if(currentNode->position == goalNode->position)
 		{
-			std::vector<Node*> path;
+			std::vector<Node> path;
 			while(currentNode != nullptr)
 			{
-				path.push_back(currentNode);
+				path.push_back(*currentNode);
 				currentNode = currentNode->parent;
 			}
 
@@ -50,9 +50,9 @@ std::vector<Node*> AStar::Algorithm(const std::vector<std::vector<float>>& grid,
 
 			// Output the path
 			printf("Path found:\n");
-			for(Node* node : path)
+			for(Node node : path)
 			{
-				printf("%s", node->position.ToString().c_str());
+				printf("%s", node.position.ToString().c_str());
 			}
 
 			// Clean up dynamically allocated nodes

@@ -47,9 +47,9 @@ void GameManager::Update()
 
 		hasRunAStar = true;
 
-		for (Node* node : path)
+		for (Node node : path)
 		{
-			printf("%s", node->position.ToString().c_str());
+			printf("%s", node.position.ToString().c_str());
 		}
 	}
 }
@@ -61,9 +61,9 @@ void GameManager::Draw()
 	DrawText(TextFormat("(%.f : %.f),(%.f : %.f)", start.x,start.y, goal.x,goal.y), 20, 50, 20, RED);
 
 	// Draw the path
-	for (const Node* node : path)
+	for (const Node node : path)
 	{
-		DrawRectangle(node->position.x * mapSize, node->position.y * mapSize, mapSize, mapSize, RED);
+		DrawRectangle(node.position.x * mapSize, node.position.y * mapSize, mapSize, mapSize, RED);
 	}
 }
 
@@ -100,13 +100,4 @@ Vec2 GameManager::GetGridPositionFromMouse(int mouseX, int mouseY)
 	int gridX = static_cast<int>(mouseX / mapSize);
 	int gridY = static_cast<int>(mouseY / mapSize);
 	return Vec2(gridX, gridY);
-}
-
-void GameManager::Cleanup()
-{
-	for (Node* node : path)
-	{
-		delete node;
-	}
-	path.clear();
 }
