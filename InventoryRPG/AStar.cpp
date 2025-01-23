@@ -1,11 +1,12 @@
 #include "AStar.h"
 
+#include "raylib.h"
+
 #include <vector>
 
-void AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, Vec2 goal)
+std::vector<Node*> AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, Vec2 goal)
 {
-	std::vector<Node*> openNodes;
-	std::vector<Node*> closedNodes;
+	printf("Pathfinding Start !!");
 
 	Node* startNode = new Node(start);
 	Node* goalNode = new Node(goal);
@@ -39,7 +40,7 @@ void AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, V
 		if(currentNode->position == goalNode->position)
 		{
 			std::vector<Node*> path;
-			while(currentNode)
+			while(currentNode != nullptr)
 			{
 				path.push_back(currentNode);
 				currentNode = currentNode->parent;
@@ -57,7 +58,7 @@ void AStar::Algorithm(const std::vector<std::vector<float>>& grid, Vec2 start, V
 			// Clean up dynamically allocated nodes
 			CleanupNodes(openNodes);
 			CleanupNodes(closedNodes);
-			return;
+			return path;
 		}
 
 		// Add current node to closedNodes

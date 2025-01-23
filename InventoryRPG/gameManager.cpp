@@ -1,26 +1,10 @@
 #include "gameManager.h"
 
-#include "AStar.h"
-
 void GameManager::Init()
 {
-	//std::vector<std::vector<float>> grid =
-	//{
-	//	{ 0, 0, 0, 1, 0 },
-	//	{ 1, 1, 0, 1, 0 },
-	//	{ 0, 0, 0, 0.25f, 0 },
-	//	{ 0, 0, 1, 1, 0 },
-	//	{ 0, 0, 0, 0, 0 }
-	//};
-
-	//Vec2 start(0, 0);
-	//Vec2 goal(4, 4);
-
-	//AStar astar;
-	//astar.Algorithm(grid, start, goal);
 
 	//map Image
-	mapImage = LoadImage("ressource/map.png");
+	mapImage = LoadImage("ressource/arthur-map.png");
 	colors = LoadImageColors(mapImage);
 
 	//map Texture
@@ -45,14 +29,42 @@ void GameManager::Init()
 void GameManager::Update()
 {
 	value = grid[GetMouseY() / mapSize][GetMouseX() / mapSize];
+
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && firstPos)
+	{
+		start = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
+		firstPos = false;
+	}
+	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !firstPos)
+	{
+		goal = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
+		//firstPos = true;
+	}
+
+	if ((start.x != 0) && (start.y != 0) && (goal.x != 0) && (goal.y != 0) && !hasRunAStar)
+	{
+		path = astar.Algorithm(grid, start, goal);
+
+		hasRunAStar = true;
+
+		for (Node* node : path)
+		{
+			printf("%s", node->position.ToString().c_str());
+		}
+	}
 }
 
 void GameManager::Draw()
 {
 	DrawTextureEx(mapTexture, { 0,0 }, 0, mapSize, WHITE);
 	DrawText(TextFormat("%.2f", value), 20, 20, 20, RED);
+	DrawText(TextFormat("(%.f : %.f),(%.f : %.f)", start.x,start.y, goal.x,goal.y), 20, 50, 20, RED);
 
-	DrawPixel(GetMouseX(), GetMouseY(), RED);
+	// Draw the path
+	for (const Node* node : path)
+	{
+		DrawRectangle(node->position.x * mapSize, node->position.y * mapSize, mapSize, mapSize, RED);
+	}
 }
 
 void GameManager::Unload()
@@ -81,5 +93,20 @@ float GameManager::MapColorToValue(Color color)
 	}
 
 	return 0.0f;
+}
 
+Vec2 GameManager::GetGridPositionFromMouse(int mouseX, int mouseY)
+{
+	int gridX = static_cast<int>(mouseX / mapSize);
+	int gridY = static_cast<int>(mouseY / mapSize);
+	return Vec2(gridX, gridY);
+}
+
+void GameManager::Cleanup()
+{
+	for (Node* node : path)
+	{
+		delete node;
+	}
+	path.clear();
 }
