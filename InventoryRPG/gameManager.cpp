@@ -4,7 +4,7 @@ void GameManager::Init()
 {
 
 	//map Image
-	mapImage = LoadImage("ressource/map2.png");
+	mapImage = LoadImage("ressource/maze.png");
 	colors = LoadImageColors(mapImage);
 
 	//map Texture
@@ -95,13 +95,13 @@ void GameManager::Unload()
 
 float GameManager::MapColorToValue(Color color)
 {
-	//mostly green
-	if(color.g > color.r && color.g > color.b)
+	//mostly green or white
+	if((color.g > color.r && color.g > color.b) || (color.r > 240 && color.g > 240 && color.b > 240))
 	{
 		return 0.0f;
 	}
-	//mostly white or black or red
-	if((color.r > 240 && color.g > 240 && color.b > 240) || (color.r < 10 && color.g < 10 && color.b < 10) || ( color.r > color.g && color.r > color.b ))
+	//mostly black or red
+	if((color.r < 10 && color.g < 10 && color.b < 10) || ( color.r > color.g && color.r > color.b ))
 	{
 		return 1.0f;
 	}
