@@ -100,17 +100,13 @@ float GameManager::MapColorToValue(Color color)
 	{
 		return 0.0f;
 	}
-	//mostly white
-	if((color.r > 240 && color.g > 240 && color.b > 240) || color.r < 10 && color.g < 10 && color.b < 10)
+	//mostly white or black or red
+	if((color.r > 240 && color.g > 240 && color.b > 240) || (color.r < 10 && color.g < 10 && color.b < 10) || ( color.r > color.g && color.r > color.b ))
 	{
 		return 1.0f;
 	}
 	//mostly blue
 	if(color.b > color.r && color.b > color.g)
-	{
-		return 0.25f;
-	}
-	if(color.r > color.g && color.r > color.b)
 	{
 		return 0.5f;
 	}
