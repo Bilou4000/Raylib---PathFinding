@@ -69,28 +69,14 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 		for(Node* child : GetChildrens(currentNode, grid))
 		{
 			// If child is in closedNodes, skip it
-			bool isClosed = false;
-			for(Node* closedNode : closedNodes)
+			if(std::find_if(closedNodes.begin(), closedNodes.end(), [child](Node* node)
 			{
-				if(*child == *closedNode)
-				{
-					isClosed = true;
-					break;
-				}
-			}
-
-			if(isClosed)
-			{
-				//printf("closed node strlmmrkmrmk\n");
-				delete child;
-				continue;
-			}
-
-			/*if(std::find(closedNodes.begin(), closedNodes.end(), child) != closedNodes.end())
+				return *child == *node;
+			}) != closedNodes.end())
 			{
 				delete child;
 				continue;
-			}*/
+			}
 
 			// Calculate g, h, and f values
 			child->g = currentNode->g + currentNode->GetDistance(*child) * ( 1 + 2 * child->costMultiplier );

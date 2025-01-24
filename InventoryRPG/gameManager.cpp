@@ -4,12 +4,13 @@ void GameManager::Init()
 {
 
 	//map Image
-	mapImage = LoadImage("ressource/arthur-map.png");
+	mapImage = LoadImage("ressource/map2.png");
 	colors = LoadImageColors(mapImage);
 
 	//map Texture
 	mapTexture = LoadTextureFromImage(mapImage);
 	mapSize = ( float ) GetScreenWidth() / mapTexture.width;
+	printf("MapSize: %f\n", mapSize);
 
 	int mapHeight = mapImage.height;
 	int mapWidth = mapImage.width;
@@ -28,7 +29,16 @@ void GameManager::Init()
 
 void GameManager::Update()
 {
-	value = grid[GetMouseY() / mapSize][GetMouseX() / mapSize];
+	int gridX = GetMouseX() / mapSize;
+	int gridY = GetMouseY() / mapSize;
+	if(gridX >= 0 && gridX < grid[0].size() && gridY >= 0 && gridY < grid.size())
+	{
+		value = grid[gridY][gridX];
+	}
+	else
+	{
+		value = -1.0f;
+	}
 
 	//start = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
 
@@ -85,18 +95,22 @@ void GameManager::Unload()
 
 float GameManager::MapColorToValue(Color color)
 {
-	//mostly white
-	if(color.r > 240 && color.g > 240 && color.b > 240)
+	//mostly green
+	if(color.g > color.r && color.g > color.b)
 	{
 		return 0.0f;
 	}
-	//mostly green
-	if(color.g > color.r && color.g > color.b)
+	//mostly white
+	if((color.r > 240 && color.g > 240 && color.b > 240) || color.r < 10 && color.g < 10 && color.b < 10)
 	{
 		return 1.0f;
 	}
 	//mostly blue
 	if(color.b > color.r && color.b > color.g)
+	{
+		return 0.25f;
+	}
+	if(color.r > color.g && color.r > color.b)
 	{
 		return 0.5f;
 	}
