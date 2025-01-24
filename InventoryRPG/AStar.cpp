@@ -16,6 +16,8 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 	startNode->f = startNode->g + startNode->h;
 	openNodes.push_back(startNode);
 
+	std::vector<Node> path;
+
 	while(!openNodes.empty())
 	{
 		// Find the node with the lowest f
@@ -39,7 +41,6 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 		// Check if we reached the goal
 		if(currentNode->position == goalNode->position)
 		{
-			std::vector<Node> path;
 			while(currentNode != nullptr)
 			{
 				path.push_back(*currentNode);
@@ -50,10 +51,10 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 
 			// Output the path
 			printf("Path found:\n");
-			for(Node node : path)
-			{
-				printf("%s", node.position.ToString().c_str());
-			}
+			//for(Node node : path)
+			//{
+			//	printf("%s", node.position.ToString().c_str());
+			//}
 
 			// Clean up dynamically allocated nodes
 			CleanupNodes(openNodes);
@@ -68,19 +69,39 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 		for(Node* child : GetChildrens(currentNode, grid))
 		{
 			// If child is in closedNodes, skip it
-			if(std::find(closedNodes.begin(), closedNodes.end(), child) != closedNodes.end())
+			bool isClosed = false;
+			for(Node* closedNode : closedNodes)
 			{
+				if(*child == *closedNode)
+				{
+					isClosed = true;
+					break;
+				}
+			}
+
+			if(isClosed)
+			{
+				//printf("closed node strlmmrkmrmk\n");
 				delete child;
 				continue;
 			}
 
+			/*if(std::find(closedNodes.begin(), closedNodes.end(), child) != closedNodes.end())
+			{
+				delete child;
+				continue;
+			}*/
+
 			// Calculate g, h, and f values
-			child->g = currentNode->g + currentNode->GetDistance(child) * ( 1 + 2 * child->costMultiplier );
+			child->g = currentNode->g + currentNode->GetDistance(*child) * ( 1 + 2 * child->costMultiplier );
 			child->h = Heuristic(child, goalNode);
 			child->f = child->g + child->h;
 
 			// Check if the child is in the open list
-			auto children = std::find(openNodes.begin(), openNodes.end(), child);
+			auto children = std::find_if(openNodes.begin(), openNodes.end(), [child](Node* node)
+			{
+				return *child == *node;
+			});
 
 			if(children != openNodes.end()) // Already in open list
 			{
@@ -111,6 +132,7 @@ std::vector<Node> AStar::Algorithm(const std::vector<std::vector<float>>& grid, 
 	// Clean up dynamically allocated nodes
 	CleanupNodes(openNodes);
 	CleanupNodes(closedNodes);
+	return path;
 }
 
 // GetChildrens function for grid
@@ -139,10 +161,10 @@ std::vector<Node*> AStar::GetChildrens(Node* current, const std::vector<std::vec
 			newPos.y >= 0 && newPos.y < grid[0].size())
 		{
 			// Check if the position is walkable (not an obstacle)
-			if(grid[newPos.x][newPos.y] < 1) // Assuming 0 is walkable and 1 is an obstacle
+			if(grid[newPos.y][newPos.x] < 1) // Assuming 0 is walkable and 1 is an obstacle
 			{
 				Node* newNode = new Node(newPos);
-				newNode->costMultiplier = grid[newPos.x][newPos.y];
+				newNode->costMultiplier = grid[newPos.y][newPos.x];
 				childrens.push_back(newNode);
 			}
 		}

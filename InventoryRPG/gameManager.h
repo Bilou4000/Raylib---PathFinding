@@ -33,6 +33,6 @@ private:
 	float value = -1;
 
 	bool firstPos = true;
-	bool hasRunAStar = false;
+	bool canRunAStar = false;
 };
 

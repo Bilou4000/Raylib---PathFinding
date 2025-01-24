@@ -5,7 +5,9 @@
 struct Node
 {
 	Node(Vec2 pPosition = Vec2(0, 0));
-	float GetDistance(Node* from);
+	float GetDistance(const Node& from);
+
+	bool operator==(const Node& node) const;
 
 	Node* parent;
 	Vec2 position;

@@ -12,7 +12,12 @@ Node::Node(Vec2 pPosition) : position(pPosition)
 	parent = nullptr;
 }
 
-float Node::GetDistance(Node* from)
+float Node::GetDistance(const Node& from)
 {
-	return ( position - from->position ).SqrDistance();
+	return ( position - from.position ).SqrDistance();
+}
+
+bool Node::operator==(const Node& node) const
+{
+	return position == node.position;
 }

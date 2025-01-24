@@ -30,35 +30,44 @@ void GameManager::Update()
 {
 	value = grid[GetMouseY() / mapSize][GetMouseX() / mapSize];
 
+	//start = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
+
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && firstPos)
 	{
 		start = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
 		firstPos = false;
 	}
-	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !firstPos)
+	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) )
 	{
 		goal = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
-		//firstPos = true;
+		firstPos = true;
+		canRunAStar = true;
 	}
 
-	if ((start.x != 0) && (start.y != 0) && (goal.x != 0) && (goal.y != 0) && !hasRunAStar)
+	if (canRunAStar)
 	{
 		path = astar.Algorithm(grid, start, goal);
-
-		hasRunAStar = true;
 
 		for (Node node : path)
 		{
 			printf("%s", node.position.ToString().c_str());
 		}
+
+		canRunAStar = false;
 	}
 }
 
 void GameManager::Draw()
 {
+	//Vec2 mousePos = GetGridPositionFromMouse(GetMouseX(), GetMouseY());
+
 	DrawTextureEx(mapTexture, { 0,0 }, 0, mapSize, WHITE);
 	DrawText(TextFormat("%.2f", value), 20, 20, 20, RED);
 	DrawText(TextFormat("(%.f : %.f),(%.f : %.f)", start.x,start.y, goal.x,goal.y), 20, 50, 20, RED);
+	//DrawText(TextFormat("Mouse Pos : (%.f : %.f)", mousePos.x,mousePos.y), 20, 70, 20, RED);
+
+	DrawRectangle(start.x * mapSize, start.y * mapSize, mapSize, mapSize, VIOLET);
+	DrawRectangle(goal.x * mapSize, goal.y * mapSize, mapSize, mapSize, PINK);
 
 	// Draw the path
 	for (const Node node : path)
